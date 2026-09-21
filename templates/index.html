@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Personal Info Page</title>
+
+
+<style>
+    body {
+        font-family: Arial;
+        background: #f3f3f3;
+        padding: 50px;
+    }
+
+    .container {
+        width: 800px;
+        margin: auto;
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px #ddd;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    input {
+        width: 70%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    button {
+        padding: 12px 18px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .send {
+        background: #333;
+        color: white;
+    }
+
+    .delete {
+        background: #e05252;
+        color: white;
+    }
+
+    table {
+        width: 100%;
+        margin-top: 25px;
+        border-collapse: collapse;
+    }
+
+    th {
+        background: #333;
+        color: white;
+    }
+
+    th, td {
+        padding: 12px;
+        border: 1px solid #ddd;
+        text-align: center;
+    }
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+
+<h1>Personal Info Page</h1>
+
+<input
+    id="messageInput"
+    type="text"
+    placeholder="Enter your information..."
+>
+
+<button class="send" onclick="sendMessage()">
+    Send
+</button>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Information</th>
+        <th>Action</th>
+    </tr>
+
+    {% for message in messages %}
+    <tr>
+        <td>{{ message.id }}</td>
+        <td>{{ message.message }}</td>
+        <td>
+            <button
+                class="delete"
+                onclick="deleteMessage({{ message.id }})">
+                Delete
+            </button>
+        </td>
+    </tr>
+
+    {% else %}
+    <tr>
+        <td colspan="3">No information available</td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+</div>
+
+<script>
+
+async function sendMessage() {
+    let message = document.getElementById("messageInput").value;
+
+    if (!message) {
+        alert("Please enter your information.");
+        return;
+    }
+
+    let response = await fetch("/messages", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message: message })
+    });
+
+    if (response.ok) {
+        location.reload();
+    }
+}
+
+async function deleteMessage(id) {
+    let response = await fetch("/messages/" + id, {
+        method: "DELETE"
+    });
+
+    if (response.ok) {
+        location.reload();
+    }
+}
+
+</script>
+
+</body>
+</html>
